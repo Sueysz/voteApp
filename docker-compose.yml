@@ -44,11 +44,15 @@ services:
       POSTGRES_PASSWORD: postgres
     networks:
       - batman
+    volumes:
+      - postgres-data:/data
 
   redis:
     image: "redis:latest"
     networks:
       - batman
+    volumes:
+      - redis-data:/data
 
 networks:
   batman:
