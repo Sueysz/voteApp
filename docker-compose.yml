@@ -53,6 +53,13 @@ services:
       - batman
     volumes:
       - redis-data:/data
+  
+  prometheus:
+    image: bitnami/prometheus:latest
+    ports:
+      - "9090:9090"
+    networks:
+      - batman
 
 networks:
   batman:
