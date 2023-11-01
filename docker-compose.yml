@@ -1,0 +1,54 @@
+version: '3'
+services:
+  python:
+    build:
+      context: ./vote
+    ports:
+      - "8080:8080"
+    networks:
+      - batman
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+
+  node:
+    build:
+      context: ./result
+    ports:
+      - "8888:8888"
+    networks:
+      - batman
+    depends_on:
+      - postgres
+      - dotnet
+    environment:
+      - POSTGRES_HOST=postgres
+
+  dotnet:
+    build:
+      context: ./worker
+    networks:
+      - batman
+    depends_on:
+      - postgres
+      - redis
+      - python
+    environment:
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+
+  postgres:
+    image: "postgres:latest"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - batman
+
+  redis:
+    image: "redis:latest"
+    networks:
+      - batman
+
+networks:
+  batman:
