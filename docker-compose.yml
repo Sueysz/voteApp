@@ -36,7 +36,7 @@ services:
     build:
       context: ./worker
     networks:
-      - batman
+      - batman-back
     depends_on:
       - postgres
       - redis
@@ -55,14 +55,14 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
     networks:
-      - batman
+      - batman-back
     volumes:
       - postgres-data:/data
 
   redis:
     image: "redis:latest"
     networks:
-      - batman
+      - batman-back
     volumes:
       - redis-data:/data
     healthcheck:
@@ -71,9 +71,10 @@ services:
       timeout: 10s
       retries: 3
 
-# Définition du réseau "batman"
+# Définition du réseau "batman" pour le front-end et "batman-back" pour le back-end
 networks:
   batman:
+  batman-back:
 
 # Définition des volumes pour le stockage persistant
 volumes:
