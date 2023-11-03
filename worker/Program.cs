@@ -16,7 +16,9 @@ namespace Worker
         {
             try
             {
+                // Modification des connexions : remplacement de "localhost" par "postgres" pour la connexion PostgreSQL
                 var pgsql = OpenDbConnection("Server=postgres;Username=postgres;Password=postgres;");
+                // Modification des connexions : remplacement de "localhost" par "redis" pour la connexion Redis
                 var redisConn = OpenRedisConnection("redis");
                 var redis = redisConn.GetDatabase();
 

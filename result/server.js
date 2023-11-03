@@ -22,6 +22,7 @@ io.sockets.on("connection", function (socket) {
   })
 })
 
+// J'ai modifié la chaîne de connexion, remplaçant "localhost" par "postgres".
 const pool = new pg.Pool({
   connectionString: "postgres://postgres:postgres@postgres/postgres",
 })

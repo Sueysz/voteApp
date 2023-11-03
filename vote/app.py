@@ -16,6 +16,7 @@ app.logger.setLevel(logging.INFO)
 
 def get_redis():
     if not hasattr(Flask, 'redis'):
+        # J'ai modifié la chaîne de connexion, remplaçant "localhost" par "redis".
         Flask.redis = Redis(host="redis", db=0, socket_timeout=5)
     return Flask.redis
 

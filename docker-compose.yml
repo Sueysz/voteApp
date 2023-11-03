@@ -1,4 +1,6 @@
+# choix de la version de docker compose
 version: '3'
+# Définition des services (conteneurs) de l'appli
 services:
   python:
     build:
@@ -69,9 +71,11 @@ services:
       timeout: 10s
       retries: 3
 
+# Définition du réseau "batman"
 networks:
   batman:
 
+# Définition des volumes pour le stockage persistant
 volumes:
   postgres-data:
   redis-data:
