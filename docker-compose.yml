@@ -24,6 +24,11 @@ services:
       - dotnet
     environment:
       - POSTGRES_HOST=postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://postgres:5432"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
 
   dotnet:
     build:
@@ -37,6 +42,11 @@ services:
     environment:
       - POSTGRES_HOST=postgres
       - REDIS_HOST=redis
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://postgres:5432","http://redis:6379"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
 
   postgres:
     image: "postgres:latest"
@@ -53,13 +63,11 @@ services:
       - batman
     volumes:
       - redis-data:/data
-  
-  prometheus:
-    image: bitnami/prometheus:latest
-    ports:
-      - "9090:9090"
-    networks:
-      - batman
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://python:8080"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
 
 networks:
   batman:
