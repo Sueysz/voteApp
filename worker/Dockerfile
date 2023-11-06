@@ -5,8 +5,8 @@ WORKDIR /worker
 # Copie de tous les fichiers du projet dans le conteneur
 COPY . .
 # Restauration des dépendances du projet .NET
-RUN ["dotnet", "restore"]
+RUN dotnet restore
 # Publication de l'application en mode "release" sans restauration des dépendances
-RUN ["dotnet", "publish", "-c", "release", "--self-contained", "false", "--no-restore"]
+RUN dotnet publish -c release --self-contained false --no-restore
 # Commande de démarrage de l'application, spécifiant le chemin de l'exécutable
 CMD ["dotnet", "bin/release/net7.0/Worker.dll"]
