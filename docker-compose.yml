@@ -3,8 +3,7 @@ version: '3'
 # Définition des services (conteneurs) de l'appli
 services:
   python:
-    build:
-      context: ./vote
+    image: sueyss/vote
     ports:
       - "8080:8080"
     networks:
@@ -12,12 +11,18 @@ services:
       - batman-back
     depends_on:
       - redis
-    environment:
-      - REDIS_HOST=redis
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
 
   node:
-    build:
-      context: ./result
+    image: sueyss/result
     ports:
       - "8888:8888"
     networks:
@@ -25,32 +30,37 @@ services:
       - batman-back
     depends_on:
       - postgres
-      - dotnet
-    environment:
-      - POSTGRES_HOST=postgres
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://postgres:5432"]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://postgres:5432"]
+    #   interval: 1m30s
+    #   timeout: 10s
+    #   retries: 3
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
 
   dotnet:
-    build:
-      context: ./worker
+    image: sueyss/worker
     networks:
       - batman-back
     depends_on:
       - postgres
       - redis
-      - python
-    environment:
-      - POSTGRES_HOST=postgres
-      - REDIS_HOST=redis
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://postgres:5432","http://redis:6379"]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
 
   postgres:
     image: "postgres:latest"
@@ -60,6 +70,15 @@ services:
       - batman-back
     volumes:
       - postgres-data:/data
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
 
   redis:
     image: "redis:latest"
@@ -67,11 +86,22 @@ services:
       - batman-back
     volumes:
       - redis-data:/data
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://python:8080"]
-      interval: 1m30s
-      timeout: 10s
-      retries: 3
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://python:8080"]
+    #   interval: 1m30s
+    #   timeout: 10s
+    #   retries: 1
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+  
+  
 
 # Définition du réseau "batman" pour le front-end et "batman-back" pour le back-end
 networks:
