@@ -17,7 +17,7 @@ namespace Worker
             try
             {
                 // Modification des connexions : remplacement de "localhost" par "postgres" pour la connexion PostgreSQL
-                var pgsql = OpenDbConnection("Server=postgres;Username=postgres;Password=postgres;");
+                var pgsql = OpenDbConnection("Server=postgres;Username=postgres;Password=postgres;Port:5432;");
                 // Modification des connexions : remplacement de "localhost" par "redis" pour la connexion Redis
                 var redisConn = OpenRedisConnection("redis");
                 var redis = redisConn.GetDatabase();
@@ -33,7 +33,7 @@ namespace Worker
                     // Se reconnecter à Redis si la connexion est perdue
                     if (redisConn == null || !redisConn.IsConnected) {
                         Console.WriteLine("Reconnecting Redis");
-                        redisConn = OpenRedisConnection("localhost");
+                        redisConn = OpenRedisConnection("redis");
                         redis = redisConn.GetDatabase();
                     }
                     string json = redis.ListLeftPopAsync("votes").Result;
@@ -46,7 +46,7 @@ namespace Worker
                         if (!pgsql.State.Equals(System.Data.ConnectionState.Open))
                         {
                             Console.WriteLine("Reconnecting DB");
-                            pgsql = OpenDbConnection("Server=localhost;Username=postgres;Password=postgres;");
+                            pgsql = OpenDbConnection("Server=postgres;Username=postgres;Password=postgres;Port:5432;");
                         }
                         else
                         {
@@ -98,6 +98,8 @@ namespace Worker
                                         vote VARCHAR(255) NOT NULL
                                     )";
             command.ExecuteNonQuery();
+
+            }
 
             return connection;
         }
