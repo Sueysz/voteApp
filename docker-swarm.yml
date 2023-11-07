@@ -1,0 +1,129 @@
+# choix de la version de docker compose
+version: '3'
+# Définition des services (conteneurs) de l'appli
+services:
+  vote:
+    image: sueyss/vote
+    ports:
+      - "8080:8080"
+    networks:
+      - batman
+      - batman-back
+    depends_on:
+      - redis
+    healthcheck:
+      test: ["curl", "-f", "http://localhost", "||", "exit", "1"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+  result:
+    image: sueyss/result
+    ports:
+      - "8888:8888"
+    networks:
+      - batman
+      - batman-back
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["curl", "-f", "http://localhost", "||", "exit", "1"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+  worker:
+    image: sueyss/worker
+    networks:
+      - batman-back
+    depends_on:
+      - postgres
+      - redis
+    healthcheck:
+      test: ["curl", "-f", "http://localhost", "||", "exit", "1"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+  postgres:
+    image: "postgres:latest"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - batman-back
+    volumes:
+      - postgres-data:/data
+    healthcheck:
+      test: ["curl", "-f", "http://localhost", "||", "exit", "1"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+  redis:
+    image: "redis:latest"
+    networks:
+      - batman-back
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["curl", "-f", "http://localhost", "||", "exit", "1"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 5
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+  
+  
+
+# Définition du réseau "batman" pour le front-end et "batman-back" pour le back-end
+networks:
+  batman:
+  batman-back:
+
+# Définition des volumes pour le stockage persistant
+volumes:
+  postgres-data:
+  redis-data:
