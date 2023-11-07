@@ -11,11 +11,6 @@ services:
       - batman-back
     depends_on:
       - redis
-    healthcheck:
-      test: ["curl", "-f", "http://localhost", "||", "exit", "1"]
-      interval: 30s
-      timeout: 30s
-      retries: 5
     deploy:
       replicas: 1
       update_config:
@@ -35,11 +30,6 @@ services:
       - batman-back
     depends_on:
       - postgres
-    healthcheck:
-      test: ["curl", "-f", "http://localhost", "||", "exit", "1"]
-      interval: 30s
-      timeout: 30s
-      retries: 5
     deploy:
       replicas: 1
       update_config:
@@ -57,11 +47,6 @@ services:
     depends_on:
       - postgres
       - redis
-    healthcheck:
-      test: ["curl", "-f", "http://localhost", "||", "exit", "1"]
-      interval: 30s
-      timeout: 30s
-      retries: 5
     deploy:
       replicas: 1
       update_config:
@@ -80,11 +65,6 @@ services:
       - batman-back
     volumes:
       - postgres-data:/data
-    healthcheck:
-      test: ["curl", "-f", "http://localhost", "||", "exit", "1"]
-      interval: 30s
-      timeout: 30s
-      retries: 5
     deploy:
       replicas: 1
       update_config:
@@ -101,11 +81,6 @@ services:
       - batman-back
     volumes:
       - redis-data:/data
-    healthcheck:
-      test: ["curl", "-f", "http://localhost", "||", "exit", "1"]
-      interval: 30s
-      timeout: 30s
-      retries: 5
     deploy:
       replicas: 1
       update_config:
