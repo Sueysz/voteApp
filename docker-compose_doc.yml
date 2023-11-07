@@ -1,0 +1,72 @@
+# choix de la version de docker compose
+version: '3'
+# Définition des services (conteneurs) de l'appli
+services:
+  vote:
+    build: 
+      context: ./vote
+    ports:
+      - "8080:8080"
+    networks:
+      - batman
+      - batman-back
+    depends_on:
+      - redis
+
+  result:
+    build: 
+      context: ./result
+    ports:
+      - "8888:8888"
+    networks:
+      - batman
+      - batman-back
+    depends_on:
+      - postgres
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://postgres:5432"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+  worker:
+    build:
+      context: ./worker
+    networks:
+      - batman-back
+    depends_on:
+      - postgres
+      - redis
+
+  postgres:
+    image: "postgres:latest"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - batman-back
+    volumes:
+      - postgres-data:/data
+
+  redis:
+    image: "redis:latest"
+    networks:
+      - batman-back
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://python:8080"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 1
+  
+  
+
+# Définition du réseau "batman" pour le front-end et "batman-back" pour le back-end
+networks:
+  batman:
+  batman-back:
+
+# Définition des volumes pour le stockage persistant
+volumes:
+  postgres-data:
+  redis-data:
