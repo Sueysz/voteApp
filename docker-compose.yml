@@ -16,15 +16,6 @@ services:
       interval: 30s
       timeout: 30s
       retries: 5
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 5
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
 
   node:
     image: sueyss/result
@@ -40,15 +31,6 @@ services:
       interval: 30s
       timeout: 30s
       retries: 5
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 5
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
 
   dotnet:
     image: sueyss/worker
@@ -62,15 +44,6 @@ services:
       interval: 30s
       timeout: 30s
       retries: 5
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 5
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
 
   postgres:
     image: "postgres:latest"
@@ -85,15 +58,6 @@ services:
       interval: 30s
       timeout: 30s
       retries: 5
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 5
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
 
   redis:
     image: "redis:latest"
@@ -106,17 +70,6 @@ services:
       interval: 30s
       timeout: 30s
       retries: 5
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 5
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-  
-  
 
 # Définition du réseau "batman" pour le front-end et "batman-back" pour le back-end
 networks:
